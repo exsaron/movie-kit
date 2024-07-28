@@ -1,0 +1,439 @@
+#:kivy 2.3.0
+
+SubtitleAddingPage:
+    name: 'subtitleadding'
+    video_input_dir_chooser: video_input_dir_chooser.__self__
+    video_input_formats_chooser: video_input_formats_chooser.__self__
+    subtitle_input_dir_chooser: subtitle_input_dir_chooser.__self__
+    subtitle_input_formats_chooser: subtitle_input_formats_chooser.__self__
+    output_dir_chooser: output_dir_chooser.__self__
+    additional_settings: additional_settings.__self__
+
+    MDBoxLayout:
+        orientation: 'horizontal'
+        spacing: config.gui.BOX_SPACING
+        size_hint_y: 0.65
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: config.gui.BOX_SPACING
+
+            InputBtns:
+                size_hint_y: 0.15
+                orientation: 'vertical'
+
+                FBHButton:
+                    pos_hint: {"center_y": 0.5, "center_x": 0.5}
+                    on_release: root.video_input_dir_chooser.open()
+
+                    FlexibleButtonIcon:
+                        icon: 'folder-edit-outline'
+
+                    FBButtonText:
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        text: root.video_input_dir_text
+                        font_style: 'Title'
+                        role: 'large'
+
+                    FlexibleDialog:
+                        id: video_input_dir_chooser
+
+                        MDDialogHeadlineText:
+                            text: root._video_input_dir_pre
+                            text_color: config.gui.colors.WHITE.name
+                            theme_text_color: 'Custom'
+
+                        MDDialogSupportingText:
+                            theme_text_color: 'Custom'
+                            text_color: config.gui.colors.WHITE.name
+                            text: 'Выберите каталог'
+
+                        MDDialogContentContainer:
+                            orientation: 'vertical'
+
+                            DirChooser:
+                                path: root.video_input_dir
+                                on_selection: root.preset_video_input_dir(args[1][0])
+
+                        MDDialogButtonContainer:
+                            spacing: dp(8)
+                            MDWidget:
+                            FBButton:
+                                md_bg_color: config.gui.colors.WHITE.rgba
+                                line_color: config.gui.colors.DANGER.rgba
+                                on_release: root.video_input_dir_chooser.dismiss()
+
+                                FBButtonText:
+                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                                    text: 'Отмена'
+                                    text_color: config.gui.colors.DANGER.rgba
+                                    font_style: 'Title'
+                                    role: 'large'
+
+                            FBButton:
+                                md_bg_color: config.gui.colors.WHITE.rgba
+                                line_color: config.gui.colors.SUCCESS.rgba
+                                on_release:
+                                    root.video_input_dir_chooser.dismiss()
+                                    root.set_video_input_dir()
+
+                                FBButtonText:
+                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                                    text: 'Выбрать'
+                                    text_color: config.gui.colors.SUCCESS.rgba
+                                    font_style: 'Title'
+                                    role: 'large'
+
+                FBHButton:
+                    pos_hint: {"center_y": 0.5, "center_x": 0.5}
+                    on_release: root.video_input_formats_chooser.open()
+
+                    FlexibleButtonIcon:
+                        icon: 'file-edit-outline'
+
+                    FBButtonText:
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        text: root.video_input_formats_text
+                        font_style: 'Title'
+                        role: 'large'
+
+                    FlexibleDialog:
+                        id: video_input_formats_chooser
+                        auto_dismiss: True
+
+                        MDDialogSupportingText:
+                            theme_text_color: 'Custom'
+                            text_color: config.gui.colors.WHITE.name
+                            text: 'Выберите входные форматы'
+
+                        MDDialogContentContainer:
+                            orientation: 'vertical'
+
+                            MDStackLayout:
+                                id: video_formats_selection
+                                adaptive_height: True
+                                spacing: config.gui.BOX_SPACING
+
+
+            FileViewer:
+                size_hint_y: 0.85
+                MDRelativeLayout:
+                    size_hint_y: 0.05
+                    pos_hint: {'y': 0.9, 'x': 0}
+                    radius: [config.gui.BORDER_RADIUS, config.gui.BORDER_RADIUS, 0, 0]
+                    md_bg_color: config.gui.colors.PRIMARY.rgba
+
+                    MDCheckbox:
+                        active: True
+                        x: config.gui.FILE_VIEWER_CHECKBOX_MARGIN_LEFT
+                        width: self.height
+                        on_active:
+                            root.video_file_selectors_check_all(args[1])
+
+                    FlexibleLabel:
+                        text: root.video_file_viewer_title
+                        pos_hint: {'center_x': .5, 'center_y': .5}
+
+                    FYButton:
+                        line_color: config.gui.colors.WHITE.name
+                        radius: [0, config.gui.BORDER_RADIUS, 0, 0]
+                        md_bg_color: config.gui.colors.TRANSPARENT.rgba
+                        x: self.parent.width - self.width
+                        on_release: root.get_input_files_info(root.video_input_files)
+                        FlexibleButtonText:
+                            text_color: config.gui.colors.WHITE.name
+                            text: 'Инфо'
+                MDScrollView:
+                    pos: self.parent.pos
+                    size_hint_y: 0.95
+                    do_scroll_x: False
+                    scroll_type: ['bars']
+                    bar_width: config.gui.SCROLL_BAR_WIDTH
+
+                    MDBoxLayout:
+                        id: video_input_files
+                        orientation: 'vertical'
+                        height: self.minimum_height
+                        size_hint_y: None
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: config.gui.BOX_SPACING
+
+            InputBtns:
+                size_hint_y: 0.15
+                orientation: 'vertical'
+
+                FBHButton:
+                    pos_hint: {"center_y": 0.5, "center_x": 0.5}
+                    on_release: root.subtitle_input_dir_chooser.open()
+
+                    FlexibleButtonIcon:
+                        icon: 'folder-edit-outline'
+
+                    FBButtonText:
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        text: root.subtitle_input_dir_text
+                        font_style: 'Title'
+                        role: 'large'
+
+                    FlexibleDialog:
+                        id: subtitle_input_dir_chooser
+
+                        MDDialogHeadlineText:
+                            text: root._subtitle_input_dir_pre
+                            text_color: config.gui.colors.WHITE.name
+                            theme_text_color: 'Custom'
+
+                        MDDialogSupportingText:
+                            theme_text_color: 'Custom'
+                            text_color: config.gui.colors.WHITE.name
+                            text: 'Выберите каталог'
+
+                        MDDialogContentContainer:
+                            orientation: 'vertical'
+
+                            DirChooser:
+                                path: root.subtitle_input_dir
+                                on_selection: root.preset_subtitle_input_dir(args[1][0])
+
+                        MDDialogButtonContainer:
+                            spacing: dp(8)
+                            MDWidget:
+                            FBButton:
+                                md_bg_color: config.gui.colors.WHITE.rgba
+                                line_color: config.gui.colors.DANGER.rgba
+                                on_release: root.subtitle_input_dir_chooser.dismiss()
+
+                                FBButtonText:
+                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                                    text: 'Отмена'
+                                    text_color: config.gui.colors.DANGER.rgba
+                                    font_style: 'Title'
+                                    role: 'large'
+
+                            FBButton:
+                                md_bg_color: config.gui.colors.WHITE.rgba
+                                line_color: config.gui.colors.SUCCESS.rgba
+                                on_release:
+                                    root.subtitle_input_dir_chooser.dismiss()
+                                    root.set_subtitle_input_dir()
+
+                                FBButtonText:
+                                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                                    text: 'Выбрать'
+                                    text_color: config.gui.colors.SUCCESS.rgba
+                                    font_style: 'Title'
+                                    role: 'large'
+
+                FBHButton:
+                    pos_hint: {"center_y": 0.5, "center_x": 0.5}
+                    on_release: root.subtitle_input_formats_chooser.open()
+
+                    FlexibleButtonIcon:
+                        icon: 'file-edit-outline'
+
+                    FBButtonText:
+                        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                        text: root.subtitle_input_formats_text
+                        font_style: 'Title'
+                        role: 'large'
+
+                    FlexibleDialog:
+                        id: subtitle_input_formats_chooser
+                        auto_dismiss: True
+
+                        MDDialogSupportingText:
+                            theme_text_color: 'Custom'
+                            text_color: config.gui.colors.WHITE.name
+                            text: 'Выберите входные форматы'
+
+                        MDDialogContentContainer:
+                            orientation: 'vertical'
+
+                            MDStackLayout:
+                                id: subtitle_formats_selection
+                                adaptive_height: True
+                                spacing: config.gui.BOX_SPACING
+
+            FileViewer:
+                size_hint_y: 0.85
+                MDRelativeLayout:
+                    size_hint_y: 0.05
+                    pos_hint: {'y': 0.9, 'x': 0}
+                    radius: [config.gui.BORDER_RADIUS, config.gui.BORDER_RADIUS, 0, 0]
+                    md_bg_color: config.gui.colors.PRIMARY.rgba
+
+                    MDCheckbox:
+                        active: True
+                        x: config.gui.FILE_VIEWER_CHECKBOX_MARGIN_LEFT
+                        width: self.height
+                        on_active: root.subtitle_file_selectors_check_all(args[1])
+
+                    FlexibleLabel:
+                        text: root.subtitle_file_viewer_title
+                        pos_hint: {'center_x': .5, 'center_y': .5}
+
+                    FYButton:
+                        line_color: config.gui.colors.WHITE.name
+                        radius: [0, config.gui.BORDER_RADIUS, 0, 0]
+                        md_bg_color: config.gui.colors.TRANSPARENT.rgba
+                        x: self.parent.width - self.width
+                        on_release: root.get_input_files_info(root.subtitle_input_files)
+                        FlexibleButtonText:
+                            text_color: config.gui.colors.WHITE.name
+                            text: 'Инфо'
+
+                MDScrollView:
+                    pos: self.parent.pos
+                    size_hint_y: 0.95
+                    do_scroll_x: False
+                    scroll_type: ['bars']
+                    bar_width: config.gui.SCROLL_BAR_WIDTH
+
+                    MDBoxLayout:
+                        id: subtitle_input_files
+                        orientation: 'vertical'
+                        height: self.minimum_height
+                        size_hint_y: None
+
+
+    OutputBtns:
+        FBHButton:
+            pos_hint: {"center_y": 0.5, "center_x": 0.5}
+            on_release: root.output_dir_chooser.open()
+
+            FlexibleButtonIcon:
+                icon: 'folder-edit-outline'
+
+            FBButtonText:
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                text: root.output_dir_text
+                font_style: 'Title'
+                role: 'large'
+
+            FlexibleDialog:
+                id: output_dir_chooser
+
+                MDDialogHeadlineText:
+                    text: root._output_dir_pre
+                    text_color: config.gui.colors.WHITE.name
+                    theme_text_color: 'Custom'
+
+                MDDialogSupportingText:
+                    theme_text_color: 'Custom'
+                    text_color: config.gui.colors.WHITE.name
+                    text: 'Выберите каталог'
+
+                MDDialogContentContainer:
+                    orientation: 'vertical'
+
+                    DirChooser:
+                        path: root.output_dir
+                        on_selection: root.preset_output_dir(args[1][0])
+
+                MDDialogButtonContainer:
+                    spacing: dp(8)
+                    MDWidget:
+                    FBButton:
+                        md_bg_color: config.gui.colors.WHITE.rgba
+                        line_color: config.gui.colors.DANGER.rgba
+                        on_release: root.output_dir_chooser.dismiss()
+
+                        FBButtonText:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            text: 'Отмена'
+                            text_color: config.gui.colors.DANGER.rgba
+                            font_style: 'Title'
+                            role: 'large'
+
+                    FBButton:
+                        md_bg_color: config.gui.colors.WHITE.rgba
+                        line_color: config.gui.colors.SUCCESS.rgba
+                        on_release:
+                            root.output_dir_chooser.dismiss()
+                            root.set_output_dir()
+
+                        FBButtonText:
+                            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                            text: 'Выбрать'
+                            text_color: config.gui.colors.SUCCESS.rgba
+                            font_style: 'Title'
+                            role: 'large'
+
+        FBHButton:
+            pos_hint: {"center_y": 0.5, "center_x": 0.5}
+            on_release: root.additional_settings.open()
+
+            FlexibleButtonIcon:
+                icon: 'folder-edit-outline'
+
+            FBButtonText:
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                text: 'Доп. параметры'
+                font_style: 'Title'
+                role: 'large'
+
+            FlexibleDialog:
+                id: additional_settings
+                auto_dismiss: True
+
+                MDDialogHeadlineText:
+                    text: 'Дополнительные параметры'
+                    text_color: config.gui.colors.WHITE.name
+                    theme_text_color: 'Custom'
+
+                MDDialogContentContainer:
+                    orientation: 'vertical'
+                    spacing: config.gui.BOX_SPACING
+
+                    FlexibleLabel:
+                        text: 'Сдвиг субтитров'
+
+                    MDTextField:
+                        id: subtitle_shift
+                        radius: [config.gui.BORDER_RADIUS]
+                        theme_text_color: 'Custom'
+                        text_color_normal: config.gui.colors.WHITE.rgba
+                        text_color_focus: config.gui.colors.WHITE.rgba
+                        text: str(root.subtitle_shift_seconds)
+                        on_text: root.on_subtitle_shift_seconds(None, args[1])
+
+                        MDTextFieldLeadingIcon:
+                            icon: 'clock-plus-outline'
+                            theme_icon_color: 'Custom'
+                            icon_color_normal: config.gui.colors.WHITE.name
+                            icon_color_focus: config.gui.colors.WHITE.name
+
+                        MDTextFieldHelperText:
+                            id: subtitle_shift_note
+                            mode: 'persistent'
+                            text: 'Сдвинуть субтитры'
+                            text_color_normal: config.gui.colors.WHITE.name
+                            text_color_focus: config.gui.colors.WHITE.name
+
+                        MDTextFieldTrailingIcon:
+                            icon: 'alpha-s'
+                            theme_icon_color: 'Custom'
+                            icon_color_normal: config.gui.colors.WHITE.name
+                            icon_color_focus: config.gui.colors.WHITE.name
+
+        FBHButton:
+            pos_hint: {"center_y": 0.5, "center_x": 0.5}
+            line_color: config.gui.colors.SUCCESS.rgba
+            on_release: root.do_add()
+
+            FlexibleButtonIcon:
+                icon: 'play-box-outline'
+                icon_color: config.gui.colors.SUCCESS.rgba
+
+            FBButtonText:
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                text: config.titles.GO
+                font_style: 'Title'
+                role: 'large'
+                text_color: config.gui.colors.SUCCESS.rgba
+
+    LogOutput:
+        LogLabel:
+            id: log

@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "moviekit"
+version = "0.1.0"
+description = ""
+authors = ["exsaron <exsaron0@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+kivy = {extras = ["media"], version = "^2.3.0"}
+kivymd = {url = "https://github.com/kivymd/KivyMD/archive/master.zip"}
+pyyaml = "^6.0.1"
+pydantic = "^2.7.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

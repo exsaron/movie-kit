@@ -1,0 +1,14 @@
+.idea
+*.pyc
+__pycache__/
+
+.venv
+
+config.yaml
+
+output/*
+input/audiotrack/*
+input/subtitle/*
+input/video/*
+
+data/tools/*

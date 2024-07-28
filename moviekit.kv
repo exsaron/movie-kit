@@ -1,0 +1,210 @@
+#:kivy 2.3.0
+#:import config config.config
+
+<FileViewer@MDBoxLayout>:
+    pos_hint: {'center_y': 0.5}
+    padding: config.gui.FILE_VIEWER_PADDING
+    size_hint_y: 0.6
+    orientation: 'vertical'
+
+    canvas.before:
+        Color:
+            rgba: config.gui.colors.WHITE.rgba
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, config.gui.BORDER_RADIUS)
+
+<FileListItem>:
+    height: dp(40)
+
+    canvas.before:
+        Color:
+            rgba: config.gui.colors.WHITE.rgba
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, config.gui.BORDER_RADIUS)
+
+<DirChooser>:
+    dirselect: True
+    filters: ['']
+    rootpath: 'D:\\'
+    size_hint_y: None
+    height: dp(400)
+
+<FlexibleDialog>:
+    theme_bg_color: 'Custom'
+    md_bg_color: config.gui.colors.DARK_VEIL.rgba
+    theme_width: "Custom"
+    size_hint_x: 1
+    radius: [config.gui.BORDER_RADIUS]
+    auto_dismiss: False
+    style: 'outlined'
+
+    canvas.before:
+        Color:
+            rgba: config.gui.colors.WHITE.rgba
+        Line:
+            rounded_rectangle: (self.x - 1, self.y - 1, self.width + 2, self.height + 2, config.gui.BORDER_RADIUS)
+
+<LogOutput@MDScrollView>:
+    padding: config.gui.LOG_PADDING
+    size_hint_y: 0.3
+    do_scroll_x: False
+    scroll_type: ['bars']
+    bar_width: dp(10)
+    canvas.before:
+        Color:
+            rgba: config.gui.colors.WHITE.rgba
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, config.gui.BORDER_RADIUS)
+
+<LogLabel@MDLabel>:
+    text: ''
+    padding: config.gui.LOG_PADDING
+    size_hint_y: None
+    height: self.texture_size[1] - config.gui.LOG_PADDING
+    text_size: self.width, None
+    markup: True
+
+<InputBtns@MDBoxLayout>:
+    orientation: 'horizontal'
+    spacing: config.gui.BOX_SPACING
+    size_hint_y: 0.05
+
+<OutputBtns@MDBoxLayout>:
+    orientation: 'horizontal'
+    spacing: config.gui.BOX_SPACING
+    size_hint_y: 0.05
+
+<BlockButton@MDButton>:
+    theme_width: "Custom"
+    size_hint_x: 1
+
+<YBlockButton@MDButton>:
+    theme_height: "Custom"
+    height: 0.88 * self.parent.height
+    pos_hint: {'center_y': 0.5}
+
+<FlexibleButton@MDButton>:
+    theme_shadow_color: "Custom"
+
+    theme_bg_color: "Custom"
+    md_bg_color: config.gui.colors.WHITE_VEIL.rgba
+
+    theme_line_color: "Custom"
+    line_color: config.gui.colors.PRIMARY.rgba
+
+    theme_shadow_offset: "Custom"
+    theme_elevation_level: "Custom"
+    theme_font_name: "Custom"
+    theme_shadow_softness: "Custom"
+    theme_focus_color: "Custom"
+    theme_divider_color: "Custom"
+    radius: [config.gui.BORDER_RADIUS]
+
+<FBButton@FlexibleButton+BlockButton>:
+    style: 'outlined'
+
+<FBHButton@FBButton>:
+    theme_height: "Custom"
+
+<FYButton@FlexibleButton+YBlockButton>:
+    style: 'outlined'
+
+<BlockButtonText@MDButtonText>:
+    pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+<FlexibleButtonText@MDButtonText>:
+    theme_text_color: "Custom"
+    text_color: config.gui.colors.PRIMARY.rgba
+
+<FBButtonText@FlexibleButtonText+BlockButtonText>:
+
+<FlexibleButtonIcon@MDButtonIcon>:
+    theme_icon_color: "Custom"
+    icon_color: config.gui.colors.PRIMARY.rgba
+
+<FlexibleLabel>:
+    adaptive_size: True
+    font_style: 'Title'
+    role: 'large'
+    theme_text_color: 'Custom'
+    text_color: config.gui.colors.WHITE.name
+
+<BlockContainer>:
+    size_hint_y: 1
+    theme_bg_color: 'Custom'
+    theme_width: 'Custom'
+
+<FileItemWidget>:
+
+<AppBar@MDTopAppBar>:
+    type: "small"
+    theme_bg_color: "Custom"
+    md_bg_color: config.gui.colors.PRIMARY.rgba
+    set_bars_color: True
+
+<AppBarBtn@MDActionTopAppBarButton>:
+    theme_line_color: "Custom"
+    line_color: config.gui.colors.WHITE.name
+    theme_icon_color: "Custom"
+    icon_color: config.gui.colors.WHITE.name
+
+<Page>:
+    AsyncImage:
+        source: str(config.BASE_DIR / 'data' / 'images' / 'background.png')
+        fit_mode: 'fill'
+    ScrollView:
+        do_scroll_x: False
+        do_scroll_y: True
+
+        AnchorLayout:
+            MDBoxLayout:
+                id: content
+                orientation: 'vertical'
+                spacing: config.gui.BOX_SPACING
+                size_hint: config.gui.page_size_hint
+
+MDBoxLayout:
+    md_bg_color: config.gui.colors.WHITE.name
+    orientation: 'vertical'
+    paginator: paginator
+
+    Paginator:
+        id: paginator
+
+    AppBar:
+        MDTopAppBarLeadingButtonContainer:
+            AppBarBtn:
+                icon: 'step-backward'
+                on_release: paginator.go_hierarchy_previous()
+
+        MDTopAppBarTitle:
+            theme_text_color: "Custom"
+            text_color: config.gui.colors.WHITE.name
+            pos_hint: {"center_x": .5}
+            text: 'MovieKit: {}'.format(paginator.current_page_name)
+
+        MDTopAppBarTrailingButtonContainer:
+            AppBarBtn:
+                icon: 'page-previous-outline'
+                on_release: paginator.go_page(direction='right')
+
+            AppBarBtn:
+                icon: 'dots-horizontal-circle-outline'
+                on_release: paginator.open_menu(self)
+
+            AppBarBtn:
+                icon: 'page-next-outline'
+                on_release: paginator.go_page(direction='left')
+
+    MDDivider:
+        color: config.gui.colors.WHITE.rgba
+
+
+    MDScreenManager:
+        id: sm
+        on_current_screen:
+            page = paginator.pages.get(args[1].name)
+            paginator.add_to_hierarchy(page.key)
+            screen = self.get_screen(page.key)
+            if 'title' in screen.ids: \
+            screen.ids.title.text = page.verbose
