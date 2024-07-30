@@ -50,6 +50,7 @@
     do_scroll_x: False
     scroll_type: ['bars']
     bar_width: dp(10)
+
     canvas.before:
         Color:
             rgba: config.gui.colors.WHITE.rgba
@@ -85,13 +86,10 @@
 
 <FlexibleButton@MDButton>:
     theme_shadow_color: "Custom"
-
     theme_bg_color: "Custom"
     md_bg_color: config.gui.colors.WHITE_VEIL.rgba
-
     theme_line_color: "Custom"
     line_color: config.gui.colors.PRIMARY.rgba
-
     theme_shadow_offset: "Custom"
     theme_elevation_level: "Custom"
     theme_font_name: "Custom"
@@ -198,7 +196,6 @@ MDBoxLayout:
 
     MDDivider:
         color: config.gui.colors.WHITE.rgba
-
 
     MDScreenManager:
         id: sm

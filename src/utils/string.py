@@ -8,6 +8,7 @@ from kivy.utils import escape_markup
 class KivyLabelString(UserString):
     """
     Имитация изменяемой строки с методами для форматирования под Kivy.
+    Поддерживает цепочки методов (method chaining).
 
     Не является подклассом ``str``. Использовать следует в f-строке, как ``str(kls)`` либо ``kls.data``
     """
