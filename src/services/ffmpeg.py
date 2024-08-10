@@ -99,9 +99,42 @@ class FFmpeg:
 
         return result
 
-    async def convert_video(self, videos: list[FileItem]) -> None:
-        # TODO
-        pass
+    async def convert_video(
+            self,
+            videos: list[FileItem],
+            output_format: str,
+            on_success: FFmpegCallback | None = None,
+            on_error: FFmpegCallback | None = None,
+    ) -> None:
+        """
+
+        :param videos:
+        :param output_format:
+        :param on_success:
+        :param on_error:
+        :return:
+        """
+        for v in videos:
+            output_filename = f'{v.name}.{output_format}'
+            command = [
+                self.__ffmpeg,
+                '-y',
+                '-i', str(v.abs_path),
+                '-c', 'copy',
+                self.output / output_filename,
+            ]
+            proc = Popen(
+                command,
+                stdout=self.stdout,
+                stderr=self.stderr,
+            )
+            out, err = proc.communicate()
+            proc.wait()
+            if proc.returncode == 0 and on_success is not None:
+                await on_success(v, result=f'Создан файл {output_filename}')
+            if proc.returncode != 0 and on_error is not None:
+                print(f'ERROR!! {err.decode('utf-8')}')
+                await on_error(v, result=f'Ошибка конвертации видео в {output_format}')
 
     async def extract_subtitles(
             self,
@@ -189,8 +222,7 @@ class FFmpeg:
                 '-map', '0:v',
                 '-map', '0:a',
                 '-map', '1:s',
-                '-map', '0:s',
-                # '-map', '1:0',        # сохраняить исходные субтитры
+                '-map', '0:s?',     # сохранить исходные субтитры, если они есть
                 '-c:v', 'copy',
                 '-c:a', 'copy',
                 '-c:s', 'copy',

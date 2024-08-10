@@ -221,6 +221,7 @@ VideoConversionPage:
         FBHButton:
             pos_hint: {"center_y": 0.5, "center_x": 0.5}
             line_color: config.gui.colors.SUCCESS.rgba
+            on_release: root.do_convert()
 
             FlexibleButtonIcon:
                 icon: 'play-box-outline'

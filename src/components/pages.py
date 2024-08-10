@@ -59,6 +59,27 @@ class MainPage(Page):
 class VideoConversionPage(VideoInputMixin, VideoOutputMixin, Page):
     input_area_columns: int = 1
 
+    def do_convert(self) -> None:
+        ffmpeg = FFmpeg(output=self.output_dir)
+        asynckivy.start(ffmpeg.convert_video(
+            self.video_input_files.active,
+            output_format=self.video_output_format,
+            on_success=self.log_convert,
+            on_error=self.logerr_convert,
+        ))
+
+    async def log_convert(self, f: FileItem, result: str) -> None:
+        await asynckivy.sleep(0)
+        self.ids.log.text += (f'{f.index:02}. '
+                              f'{_(f.fullname, is_filename=True).bold().color(config.gui.colors.BLACK.hex)} '
+                              f'{_(result).color(config.gui.colors.SUCCESS.hex).bold()}\n')
+
+    async def logerr_convert(self, f: FileItem, result: str) -> None:
+        await asynckivy.sleep(0)
+        self.ids.log.text += (f'{f.index:02}. '
+                              f'{_(f.fullname, is_filename=True).bold().color(config.gui.colors.BLACK.hex)} '
+                              f'{_(result).color(config.gui.colors.DANGER.hex).bold()}\n')
+
 
 class SubtitleExtractionPage(VideoInputMixin, OutputMixin, Page):
     input_area_columns: int = 1
