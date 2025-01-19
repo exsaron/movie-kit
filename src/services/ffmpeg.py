@@ -207,25 +207,18 @@ class FFmpeg:
             if not subtitle:
                 continue
 
-            video_info = (await self.info([video]))[video.index]
-            subtitle_info = (await self.info([subtitle]))[subtitle.index]
-
-            subtitle_language = self.__extract_language_from_subtitle_filename(subtitle.name)
-            output_filename = f'{video.name} [{subtitle_language.upper()} SUB].{video.fmt}'
-            # TODO: сохранить метаданные субтитров
+            output_filename = f'{video.name} [RUS SUB].{video.fmt}'
             command = [
                 self.__ffmpeg,
-                '-y',
-                '-i', str(video.abs_path),
-                '-itsoffset', str(subtitle_shift),
-                '-i', str(subtitle.abs_path),
-                '-map', '0:v',
-                '-map', '0:a',
-                '-map', '1:s',
-                '-map', '0:s?',     # сохранить исходные субтитры, если они есть
-                '-c:v', 'copy',
-                '-c:a', 'copy',
-                '-c:s', 'copy',
+                '-y',                                   # автозамена существующих файлов
+                '-i', str(video.abs_path),              # первый инпут-файл (видео)
+                '-itsoffset', str(subtitle_shift),      # сдвиг субтитров
+                '-i', str(subtitle.abs_path),           # второй инпут-файл (субтитры)
+                '-c', 'copy',                           # копирование всех потоков без перекодирования
+                '-map', '0',                            # выбор всех потоков видеофайла
+                '-map', '1',                            # выбор всех потоков из файла субтитров
+                '-metadata:s:s:0', 'language=rus',      # указание языка для первой дорожки субтитров
+                '-metadata:s:s:0', 'title="RUS"',       # указание заголовка для первой дорожки субтитров
                 self.output / output_filename,
             ]
             proc = Popen(

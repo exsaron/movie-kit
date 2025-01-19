@@ -40,7 +40,7 @@ class FFprobeFileStreamTags(BaseModel):
 
 class FFprobeFileStream(BaseModel):
     index: int
-    codec_name: str
+    codec_name: str = 'UNKNOWN'
     codec_long_name: str | None = None
     profile: str | None = None
     codec_type: str
